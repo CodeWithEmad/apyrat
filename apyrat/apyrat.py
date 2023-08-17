@@ -69,7 +69,7 @@ class Downloader:
             video_urls = [
                 item
                 for item in playlist_data["included"]
-                if item["type"] == "Video"
+                if item["type"] == "Video"  # noqa
             ]
 
             with ThreadPoolExecutor(max_workers=10) as executor:
