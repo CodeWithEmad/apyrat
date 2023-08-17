@@ -11,7 +11,12 @@ def test_main_download_video_with_quality():
         return_value=["480", "720", "1080"],
     ) as mock_qualities:
         result = runner.invoke(
-            main, ["https://www.aparat.com/v/qur3I", "-q", "720"]
+            main,
+            [
+                "https://www.aparat.com/v/qur3I",
+                "-q",
+                "720",
+            ],
         )
     assert result.exit_code == 0
     mock_qualities.assert_called_once()
