@@ -118,23 +118,43 @@ class Downloader:
             else self.qualities[-1]
         )
 
+    def find_closest_quality(self, video_list, target_quality):
+        exact_quality_videos = [
+            video for video in video_list if video["profile"] == target_quality
+        ]
+        if exact_quality_videos:
+            return exact_quality_videos[0]
+
+        video_qualities = [
+            int(video["profile"][:-1]) for video in video_list
+        ]  # Extract the qualities and convert to integers
+        closest_quality = min(
+            video_qualities, key=lambda x: abs(x - int(target_quality[:-1]))
+        )
+
+        for video in video_list:
+            if video["profile"] == str(closest_quality) + "p":
+                return video
+
     def download(self, quality: str):
-        for video in self.videos:
-            for item in video:
-                if item.get("profile") == quality:
-                    url = item.get("url")
-                    title = item.get("title")
-                    click.echo(f"{title}\n{url}")
-                    file_name = self.file_name or item.get("title")
-                    output_file = f"{file_name}.{self._get_file_format(url)}"
-                    # Check if file already exists
-                    if os.path.isfile(output_file):
-                        # Create a hash of the filename
-                        hash_object = hashlib.md5(output_file.encode())
-                        hex_dig = hash_object.hexdigest()
-                        # Append the hash to the filename
-                        output_file = f"{hex_dig}{output_file}"
-                    wget.download(url, out=output_file)
+        for video_qualities in self.videos:
+            video = self.find_closest_quality(video_qualities, quality)
+            self._download_video(video)
+
+    def _download_video(self, video):
+        url = video.get("url")
+        title = video.get("title")
+        click.echo(f"{title}\n{url}")
+        file_name = self.file_name or video.get("title")
+        output_file = f"{file_name}.{self._get_file_format(url)}"
+        # Check if file already exists
+        if os.path.isfile(output_file):
+            # Create a hash of the filename
+            hash_object = hashlib.md5(output_file.encode())
+            hex_dig = hash_object.hexdigest()
+            # Append the hash to the filename
+            output_file = f"{hex_dig}{output_file}"
+        wget.download(url, out=output_file)
 
     @staticmethod
     def _get_file_format(url):
