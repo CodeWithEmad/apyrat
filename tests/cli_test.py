@@ -36,18 +36,18 @@ def test_get_quality_available():
     downloader = Downloader("https://www.aparat.com/v/qur3I")
     downloader.qualities = ["480", "720", "1080"]
     with patch("click.prompt", return_value="720"):
-        assert get_quality(downloader, "720", True) == "720"
+        assert get_quality(downloader, "720") == "720"
 
 
 def test_get_quality_not_available():
     downloader = Downloader("https://www.aparat.com/v/qur3I")
     downloader.qualities = ["480", "720", "1080"]
     with patch("click.prompt", return_value="720"):
-        assert get_quality(downloader, "240", False) == "720"
+        assert get_quality(downloader, "240") == "720"
 
 
 def test_get_quality_not_available_no_confirm():
     downloader = Downloader("https://www.aparat.com/v/qur3I")
     downloader.qualities = ["480", "720", "1080"]
     with patch("click.prompt", return_value="480"):
-        assert get_quality(downloader, "240", False) == "480"
+        assert get_quality(downloader, "240") == "480"
