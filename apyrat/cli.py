@@ -1,7 +1,8 @@
 """Console script for apyrat."""
+
 import click
 
-from apyrat.apyrat import Downloader, URLType
+from apyrat.apyrat import Downloader, URLType, VideoQuality
 from apyrat.utils import get_about_information
 
 
@@ -54,7 +55,7 @@ def display_help(ctx, param, value):
 )
 @click.argument("url", type=str, required=True)
 @click.pass_context
-def main(ctx, url, quality, filename, confirm):
+def main(ctx, url: str, quality: str, filename: str, confirm: bool):
     """
     Download Aparat videos from your terminal
     """
@@ -68,16 +69,22 @@ def main(ctx, url, quality, filename, confirm):
     if filename and downloader.url_type == URLType.VIDEO:
         downloader.file_name = filename
 
-    quality_choice = get_quality(downloader, quality, confirm)
+    quality_choice = str(
+        downloader.default_quality()
+        if confirm
+        else get_quality(
+            downloader,
+            quality,
+        )
+    )
 
     downloader.download(quality_choice)
 
 
-def get_quality(downloader, quality, confirm):
+def get_quality(downloader: Downloader, quality: VideoQuality):
     if quality and quality not in downloader.qualities:
         click.echo(f"Quality {quality} is not available", err=True)
-        if not confirm:
-            quality = None
+        quality = None
 
     if not quality:
         quality_choice = click.prompt(
