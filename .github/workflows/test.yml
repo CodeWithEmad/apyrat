@@ -7,21 +7,47 @@ on:
     branches: [master]
 
 jobs:
-  tests:
-    runs-on: ubuntu-latest
+  test-p36-p37:
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        python-version:
+          - 3.6
+          - 3.7
     steps:
-      - uses: actions/checkout@v3
-      - name: Set up Python
-        uses: actions/setup-python@v3
+      - name: Check out code
+        uses: actions/checkout@v3
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
         with:
-          python-version: 3.8
-          cache: "pip"
-          cache-dependency-path: requirements_dev.txt
+          python-version: ${{ matrix.python-version }}
       - name: Upgrade pip
         run: python -m pip install --upgrade pip setuptools
       - name: Install dependencies
-        run: pip install -r requirements_dev.txt
-      - name: Static code analysis
-        run: make lint
-      - name: Python unit tests
-        run: make test
+        run: pip install tox tox-gh-actions
+      - name: Test with tox
+        run: tox
+
+  test-p38-latest:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version:
+          - 3.8
+          - 3.9
+          - "3.10"
+          - 3.11
+          - 3.12
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Upgrade pip
+        run: python -m pip install --upgrade pip setuptools
+      - name: Install dependencies
+        run: pip install tox tox-gh-actions
+      - name: Test with tox
+        run: tox
