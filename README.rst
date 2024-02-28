@@ -1,18 +1,18 @@
-Apyrat: An Aparat video downloader
-===================================
-
-.. image:: https://img.shields.io/static/v1?logo=github&label=Git&style=flat-square&color=brightgreen&message=Source%20code
-  :alt: Source code
-  :target: https://github.com/CodeWithEmad/apyrat
-
 .. image:: https://img.shields.io/pypi/v/apyrat?logo=python&logoColor=white
   :alt: PyPI releases
   :target: https://pypi.python.org/pypi/apyrat
+
+.. image:: https://img.shields.io/pypi/pyversions/apyrat.svg
+  :target: https://pypi.org/project/apyrat
 
 .. image:: https://img.shields.io/github/license/CodeWithEmad/apyrat.svg?style=flat-square
   :alt: MIT License
   :target: https://opensource.org/license/mit/
 
+Apyrat
+======
+
+Yet another `Aparat <https://www.aparat.com>`__ video downloader.
 
 Getting Started
 ---------------
