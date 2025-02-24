@@ -5,7 +5,7 @@
 ![Python Versions](https://img.shields.io/pypi/pyversions/apyrat.svg)
 ![MIT License](https://img.shields.io/github/license/CodeWithEmad/apyrat.svg?style=flat-square)
 
-Yet another `Aparat <https://www.aparat.com>`__ video downloader.
+Yet another [Aparat](https://www.aparat.com) video downloader.
 
 ## Getting Started
 
@@ -15,7 +15,7 @@ you can install Apyrat from PyPi:
 pip install -U apyrat
 ```
 
-for example you want to download the video hosted `here <https://www.aparat.com/v/qur3I>`__. just run:
+for example you want to download the video hosted [here](https://www.aparat.com/v/qur3I). Just run:
 
 ``` bash
 apyrat https://www.aparat.com/v/qur3I
