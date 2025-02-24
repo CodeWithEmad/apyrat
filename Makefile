@@ -1,78 +1,53 @@
-.PHONY: clean clean-build clean-pyc clean-test coverage dist help install lint lint/flake8 lint/black
 .DEFAULT_GOAL := help
+SHELL=/bin/bash
+ESCAPE = 
+RUN=uv run
 
-define BROWSER_PYSCRIPT
-import os, webbrowser, sys
+###### Development
 
-from urllib.request import pathname2url
+install: install-uv ## Create venv and install dependencies
+	uv venv
+	uv sync
 
-webbrowser.open("file://" + pathname2url(os.path.abspath(sys.argv[1])))
-endef
-export BROWSER_PYSCRIPT
+install-uv: ## Install the latest uv package
+	pip install -U uv
 
-define PRINT_HELP_PYSCRIPT
-import re, sys
+install-dev: ## Install development dependencies
+	$(RUN) pip install -e .
 
-for line in sys.stdin:
-	match = re.match(r'^([a-zA-Z_-]+):.*?## (.*)$$', line)
-	if match:
-		target, help = match.groups()
-		print("%-20s %s" % (target, help))
-endef
-export PRINT_HELP_PYSCRIPT
+test: test-static test-unit ## Run tests
 
-BROWSER := python -c "$$BROWSER_PYSCRIPT"
+test-unit: ## Run unit tests
+	$(RUN) pytest
 
-help:
-	@python -c "$$PRINT_HELP_PYSCRIPT" < $(MAKEFILE_LIST)
+test-static: test-lint ## Run static tests
 
-clean: clean-build clean-pyc clean-test ## remove all build, test, coverage and Python artifacts
+test-lint: ## Run linting
+	$(RUN) ruff check .
 
-clean-build: ## remove build artifacts
-	rm -fr build/
-	rm -fr dist/
-	rm -fr .eggs/
-	find . -name '*.egg-info' -exec rm -fr {} +
-	find . -name '*.egg' -exec rm -f {} +
+format: ## Format code
+	$(RUN) ruff check . --fix
 
-clean-pyc: ## remove Python file artifacts
-	find . -name '*.pyc' -exec rm -f {} +
-	find . -name '*.pyo' -exec rm -f {} +
-	find . -name '*~' -exec rm -f {} +
-	find . -name '__pycache__' -exec rm -fr {} +
+###### Release
 
-clean-test: ## remove test and coverage artifacts
-	rm -fr .tox/
-	rm -f .coverage
-	rm -fr htmlcov/
-	rm -fr .pytest_cache
+build: test ## Build package with running test
+	find . -type d -name "dist" -exec rm -rf {} +
+	$(RUN) hatch build
 
-lint/flake8: ## check style with flake8
-	flake8 apyrat tests
-lint/black: ## check style with black
-	black --check apyrat tests
+publish: build ## Publish package
+	$(RUN) hatch publish
 
-lint: lint/flake8 lint/black ## check style
+###### Additional Commands
 
-test: ## run tests quickly with the default Python
-	pytest
+clean: ## Clean up cache and temporary files
+	find . -type d -name "__pycache__" -exec rm -rf {} +
+	find . -type d -name ".pytest_cache" -exec rm -rf {} +
+	find . -type d -name ".ruff_cache" -exec rm -rf {} +
+	find . -type d -name "build" -exec rm -rf {} +
+	find . -type d -name "dist" -exec rm -rf {} +
+	find . -type d -name ".coverage" -exec rm -rf {} +
 
-test-all: ## run tests on every Python version with tox
-	tox
-
-coverage: ## check code coverage quickly with the default Python
-	coverage run --source apyrat -m pytest
-	coverage report -m
-	coverage html
-	$(BROWSER) htmlcov/index.html
-
-release: dist ## package and upload a release
-	twine upload dist/*
-
-dist: clean ## builds source and wheel package
-	python setup.py sdist
-	python setup.py bdist_wheel
-	ls -l dist
-
-install: clean ## install the package to the active Python's site-packages
-	python setup.py install
+help: ## Print this help
+	@grep -E '^([a-zA-Z_-]+:.*?## .*|######* .+)$$' Makefile \
+		| sed 's/######* \(.*\)/@               $(ESCAPE)[1;31m\1$(ESCAPE)[0m/g' | tr '@' '\n' \
+		| awk 'BEGIN {FS = ":.*?## "}; {printf "\033[33m%-30s\033[0m %s\n", $$1, $$2}'
