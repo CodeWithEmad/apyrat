@@ -7,28 +7,27 @@ on:
     branches: [master]
 
 jobs:
-  test-p36-p37:
+  test-p37:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
         python-version:
-          - 3.6
           - 3.7
     steps:
       - name: Check out code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
       - name: Upgrade pip
-        run: python -m pip install --upgrade pip setuptools
+        run: pip install --upgrade pip
       - name: Install dependencies
-        run: pip install tox tox-gh-actions
-      - name: Test with tox
-        run: tox
+        run: make install
+      - name: Run Tests
+        run: make test
 
-  test-p38-latest:
+  test-p38-onward:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -40,14 +39,14 @@ jobs:
           - 3.12
     steps:
       - name: Check out code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
       - name: Upgrade pip
-        run: python -m pip install --upgrade pip setuptools
+        run: pip install --upgrade pip
       - name: Install dependencies
-        run: pip install tox tox-gh-actions
-      - name: Test with tox
-        run: tox
+        run: make install
+      - name: Run Tests
+        run: make test
