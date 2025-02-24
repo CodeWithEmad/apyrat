@@ -45,7 +45,7 @@ apyrat = "src.cli:main"
 packages = ["src"]
 
 [build-system]
-requires = ["hatchling<1.18.0"]
+requires = ["hatchling>=1.18.0"]
 build-backend = "hatchling.build"
 
 [dependency-groups]
