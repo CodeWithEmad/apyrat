@@ -1,2 +1,101 @@
+[project]
+name = "apyrat"
+version = "0.2.0"
+description = "An Aparat video downloader. simple, but elegant."
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [
+    {name = "Emad Rad"},
+    {email = "codewithemad@gmail.com"},
+]
+requires-python = ">=3.7"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "click>=8.0.4",
+    "requests>=2.31.0",
+    "wget>=3.2",
+]
+
+[project.urls]
+Homepage = "https://github.com/codewithemad/apyrat"
+Issues = "https://github.com/codewithemad/apyrat/issues"
+
+[project.optional-dependencies]
+dev = [
+    "coverage>=7.2.7",
+    "pytest>=7.4.4",
+    "pytest-sugar>=1.0.0",
+    "ruff>=0.9.7",
+]
+
+[project.scripts]
+apyrat = "src.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
+
 [build-system]
-requires = ["setuptools", "wheel"]
+requires = ["hatchling<1.18.0"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = []
+
+[tool.ruff]
+line-length = 88
+target-version = "py37"
+
+[tool.ruff.lint]
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "C",  # flake8-comprehensions
+    "B",  # flake8-bugbear
+]
+ignore = []
+
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "venv",
+]
+
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10
