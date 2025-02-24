@@ -1,15 +1,20 @@
-from apyrat.apyrat import Downloader
-from apyrat.cli import get_quality, main
 from unittest.mock import patch
+
 from click.testing import CliRunner
+
+from src.apyrat import Downloader
+from src.cli import get_quality, main
 
 
 def test_main_download_video_with_quality():
     runner = CliRunner()
     with patch(
-        "apyrat.apyrat.Downloader._get_available_qualities",
+        "src.apyrat.Downloader._get_available_qualities",
         return_value=["480", "720", "1080"],
-    ) as mock_qualities:
+    ) as mock_qualities, patch(
+        "src.apyrat.Downloader.download",
+        return_value=None,
+    ) as mock_download:
         result = runner.invoke(
             main,
             [
@@ -20,12 +25,13 @@ def test_main_download_video_with_quality():
         )
     assert result.exit_code == 0
     mock_qualities.assert_called_once()
+    mock_download.assert_called_once_with("720")
 
 
 def test_main_download_video_without_quality():
     runner = CliRunner()
     with patch(
-        "apyrat.apyrat.Downloader._get_available_qualities",
+        "src.apyrat.Downloader._get_available_qualities",
         return_value=["480", "720", "1080"],
     ), patch("click.prompt", return_value="720"):
         result = runner.invoke(main, ["https://www.aparat.com/v/qur3I"])

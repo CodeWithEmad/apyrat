@@ -1,5 +1,6 @@
 from unittest.mock import patch
-from apyrat.apyrat import Downloader, VideoQuality
+
+from src.apyrat import Downloader, VideoQuality
 
 
 @patch("requests.get")
