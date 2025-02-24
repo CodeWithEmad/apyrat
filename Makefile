@@ -13,7 +13,7 @@ install-uv: ## Install the latest uv package
 	pip install -U uv
 
 install-dev: install ## Install development dependencies
-	$(RUN) pip install -e .
+	$(RUN) pip install -e ".[dev]"
 
 test: test-static test-unit ## Run tests
 
