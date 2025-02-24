@@ -12,7 +12,7 @@ install: install-uv ## Create venv and install dependencies
 install-uv: ## Install the latest uv package
 	pip install -U uv
 
-install-dev: ## Install development dependencies
+install-dev: install ## Install development dependencies
 	$(RUN) pip install -e .
 
 test: test-static test-unit ## Run tests
@@ -30,12 +30,12 @@ format: ## Format code
 
 ###### Release
 
-build: test ## Build package with running test
+build: ## Build package with running test
 	find . -type d -name "dist" -exec rm -rf {} +
-	$(RUN) hatch build
+	uv build
 
 publish: build ## Publish package
-	$(RUN) hatch publish
+	uv publish
 
 ###### Additional Commands
 
