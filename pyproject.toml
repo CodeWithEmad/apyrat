@@ -8,13 +8,12 @@ authors = [
     {name = "Emad Rad"},
     {email = "codewithemad@gmail.com"},
 ]
-requires-python = ">=3.7"
+requires-python = ">=3.8"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Programming Language :: Python",
-    "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
@@ -54,7 +53,7 @@ dev = []
 
 [tool.ruff]
 line-length = 88
-target-version = "py37"
+target-version = "py38"
 
 [tool.ruff.lint]
 select = [
