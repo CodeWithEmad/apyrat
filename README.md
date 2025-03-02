@@ -2,6 +2,7 @@
 # Apyrat ![download badge](.pypi_chart/badge.svg)
 
 ![PyPI releases](https://img.shields.io/pypi/v/apyrat?logo=python&logoColor=white)
+[![PyPI Downloads](https://static.pepy.tech/badge/apyrat)](https://pepy.tech/projects/apyrat)
 ![Python Versions](https://img.shields.io/pypi/pyversions/apyrat.svg)
 ![MIT License](https://img.shields.io/github/license/CodeWithEmad/apyrat.svg?style=flat-square)
 
