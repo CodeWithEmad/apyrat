@@ -1,12 +1,12 @@
 import hashlib
 import os
+import tempfile
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from enum import Enum
 from urllib.parse import urlparse
 
 import click
 import requests
-import wget
 
 from src.utils import check_domain_validity, prepare_headers
 
@@ -142,20 +142,47 @@ class Downloader:
             video = self.find_closest_quality(video_qualities, quality)
             self._download_video(video)
 
+    @staticmethod
+    def _sanitize_filename(name: str) -> str:
+        # Remove characters that are invalid on common filesystems
+        invalid = r'<>:"/\|?*'
+        for char in invalid:
+            name = name.replace(char, "")
+        # Strip trailing dots/spaces and limit length to be safe
+        name = name.strip().strip(".")
+        if len(name) > 200:
+            name = name[:200]
+        return name or "video"
+
     def _download_video(self, video):
         url = video.get("url")
         title = video.get("title")
         click.echo(f"{title}\n{url}")
-        file_name = self.file_name or video.get("title")
-        output_file = f"{file_name}.{self._get_file_format(url)}"
+        file_name = self._sanitize_filename(self.file_name or video.get("title"))
+        file_format = self._get_file_format(url)
+        output_file = f"{file_name}.{file_format}" if file_format else file_name
         # Check if file already exists
         if os.path.isfile(output_file):
             # Create a hash of the filename
             hash_object = hashlib.md5(output_file.encode())
             hex_dig = hash_object.hexdigest()
             # Append the hash to the filename
-            output_file = f"{hex_dig}{output_file}"
-        wget.download(url, out=output_file)
+            output_file = f"{hex_dig}_{output_file}"
+        # Download to a safe temporary file first, then rename. This avoids
+        # issues with filesystems/locales that choke on long Unicode paths
+        # (e.g. Persian filenames) when opening the final file directly.
+        fd, tmp_file = tempfile.mkstemp(dir=".")
+        os.close(fd)
+        try:
+            with requests.get(url, headers=prepare_headers(), stream=True) as r:
+                r.raise_for_status()
+                with open(tmp_file, "wb") as f:
+                    for chunk in r.iter_content(chunk_size=8192):
+                        f.write(chunk)
+            os.replace(tmp_file, output_file)
+        finally:
+            if os.path.exists(tmp_file):
+                os.remove(tmp_file)
 
     @staticmethod
     def _get_file_format(url):
