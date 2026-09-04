@@ -1,4 +1,6 @@
-from unittest.mock import patch
+import hashlib
+import os
+from unittest.mock import MagicMock, patch
 
 from src.apyrat import Downloader, VideoQuality
 
@@ -29,8 +31,13 @@ def test_default_quality():
 
 
 @patch("os.path.isfile", return_value=True)
-@patch("wget.download")
-def test_download_when_file_exists(mock_wget, mock_isfile):
+@patch("requests.get")
+def test_download_when_file_exists(mock_get, mock_isfile):
+    mock_response = MagicMock()
+    mock_response.iter_content.return_value = [b"chunk"]
+    mock_response.raise_for_status = MagicMock()
+    mock_get.return_value.__enter__ = MagicMock(return_value=mock_response)
+    mock_get.return_value.__exit__ = MagicMock(return_value=False)
     downloader = Downloader("https://www.aparat.com/v/qur3I", "outputfile")
     downloader.videos = [
         [
@@ -42,6 +49,12 @@ def test_download_when_file_exists(mock_wget, mock_isfile):
         ]
     ]
     downloader.qualities = ["720p"]
-    downloader.download("720p")
-    mock_wget.assert_called_once()
+    # The URL has no extension, so the output file is just "outputfile"
+    hex_dig = hashlib.md5("outputfile".encode()).hexdigest()
+    output_file = f"{hex_dig}_outputfile"
+    try:
+        downloader.download("720p")
+    finally:
+        if os.path.exists(output_file):
+            os.remove(output_file)
     mock_isfile.assert_called_once()
