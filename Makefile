@@ -34,9 +34,6 @@ build: ## Build package with running test
 	find . -type d -name "dist" -exec rm -rf {} +
 	uv build
 
-publish: build ## Publish package
-	uv publish
-
 ###### Additional Commands
 
 clean: ## Clean up cache and temporary files

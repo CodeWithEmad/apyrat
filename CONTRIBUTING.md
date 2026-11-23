@@ -100,11 +100,15 @@ make test
 
 ## Release Process (Maintainers)
 
+Releases publish to PyPI automatically from a version tag (trusted publishing, no token needed):
+
 ```bash
-# Build and publish
-make build
-make publish
+# 1. bump `version` in pyproject.toml and commit
+# 2. tag and push; the tag must equal the version, e.g. v0.2.3
+git tag v0.2.3 && git push origin v0.2.3
 ```
+
+The `Publish to PyPI` workflow builds, publishes, and creates the GitHub release.
 
 ## Questions?
 

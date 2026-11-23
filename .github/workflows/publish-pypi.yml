@@ -1,0 +1,54 @@
+name: Publish to PyPI
+
+# Release flow: bump `version` in pyproject.toml, commit, then
+#   git tag v0.2.3 && git push origin v0.2.3
+on:
+  push:
+    tags: ["v*"]
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v7
+      - name: Tag must match pyproject version
+        run: |
+          version=$(uv version --short)
+          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::tag $GITHUB_REF_NAME != pyproject version v$version"
+            exit 1
+          fi
+      - run: uv build
+      - uses: actions/upload-artifact@v5
+        with:
+          name: dist
+          path: dist/
+
+  publish:
+    needs: build
+    runs-on: ubuntu-24.04
+    environment: pypi
+    permissions:
+      id-token: write # PyPI trusted publishing (OIDC), no token needed
+    steps:
+      - uses: actions/download-artifact@v6
+        with:
+          name: dist
+          path: dist/
+      - uses: pypa/gh-action-pypi-publish@release/v1
+
+  github-release:
+    needs: publish
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v6
+        with:
+          name: dist
+          path: dist/
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" dist/* --repo "$GITHUB_REPOSITORY" --generate-notes --verify-tag
