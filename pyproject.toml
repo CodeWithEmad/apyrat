@@ -1,6 +1,6 @@
 [project]
 name = "apyrat"
-version = "0.2.3"
+version = "0.3.0"
 description = "An Aparat video downloader. simple, but elegant."
 readme = "README.md"
 license = { file = "LICENSE" }
@@ -8,14 +8,12 @@ authors = [
     {name = "Emad Rad"},
     {email = "codewithemad@gmail.com"},
 ]
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Programming Language :: Python",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -23,8 +21,9 @@ classifiers = [
     "Programming Language :: Python :: 3.14",
 ]
 dependencies = [
-    "click>=8.0.4",
-    "requests>=2.31.0",
+    "click>=8.1.8",
+    "requests>=2.33.0",
+    "urllib3>=2.8.0",
 ]
 
 [project.urls]
@@ -34,7 +33,7 @@ Issues = "https://github.com/codewithemad/apyrat/issues"
 [project.optional-dependencies]
 dev = [
     "coverage>=7.2.7",
-    "pytest>=7.4.4",
+    "pytest>=9.0.3",
     "pytest-sugar>=1.0.0",
     "ruff>=0.9.7",
 ]
@@ -54,7 +53,7 @@ dev = []
 
 [tool.ruff]
 line-length = 88
-target-version = "py38"
+target-version = "py310"
 
 [tool.ruff.lint]
 select = [

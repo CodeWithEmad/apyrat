@@ -1,37 +1,70 @@
+<div align="center">
 
-# Apyrat ![download badge](.pypi_chart/badge.svg)
+# Apyrat
 
-![PyPI releases](https://img.shields.io/pypi/v/apyrat?logo=python&logoColor=white)
-[![PyPI Downloads](https://static.pepy.tech/badge/apyrat)](https://pepy.tech/projects/apyrat)
-![Python Versions](https://img.shields.io/pypi/pyversions/apyrat.svg)
-![MIT License](https://img.shields.io/github/license/CodeWithEmad/apyrat.svg?style=flat-square)
+**Download [Aparat](https://www.aparat.com) videos and playlists from your terminal.**
 
-Yet another [Aparat](https://www.aparat.com) video downloader.
+[![PyPI](https://img.shields.io/pypi/v/apyrat?logo=pypi&logoColor=white)](https://pypi.org/project/apyrat/)
+[![Python](https://img.shields.io/pypi/pyversions/apyrat?logo=python&logoColor=white)](https://pypi.org/project/apyrat/)
+[![Tests](https://img.shields.io/github/actions/workflow/status/CodeWithEmad/apyrat/test.yml?branch=master&label=tests)](https://github.com/CodeWithEmad/apyrat/actions/workflows/test.yml)
+[![Downloads](https://static.pepy.tech/badge/apyrat)](https://pepy.tech/projects/apyrat)
+[![License](https://img.shields.io/github/license/CodeWithEmad/apyrat)](https://github.com/CodeWithEmad/apyrat/blob/master/LICENSE)
 
-## Getting Started
+![Monthly downloads](https://raw.githubusercontent.com/CodeWithEmad/apyrat/master/.pypi_chart/badge.svg)
 
-you can install Apyrat from PyPi:
+</div>
 
-``` bash
+## Install
+
+```bash
+pipx install apyrat        # recommended: isolated, always on your PATH
+# or
+uv tool install apyrat
+# or
 pip install -U apyrat
 ```
 
-for example you want to download the video hosted [here](https://www.aparat.com/v/qur3I). Just run:
+Requires Python 3.10+.
 
-``` bash
+## Usage
+
+```bash
+# a single video: pick a quality interactively
 apyrat https://www.aparat.com/v/qur3I
+
+# skip the prompt: 720p, or the best available if missing
+apyrat -y https://www.aparat.com/v/qur3I
+
+# an exact quality, with your own filename
+apyrat -q 1080p -f lecture https://www.aparat.com/v/qur3I
+
+# a whole playlist, in playlist order
+apyrat -y https://www.aparat.com/playlist/448747
 ```
 
-you can also download playlists:
+### Options
 
-``` bash
-apyrat https://www.aparat.com/playlist/448747
-```
+| Option | Description |
+| --- | --- |
+| `-q, --quality` | Quality to download, e.g. `480p`, `720p`, `1080p`. Prompts if it isn't available. |
+| `-y, --confirm` | Don't prompt: use 720p, or the highest available quality if 720p is missing. |
+| `-f, --filename` | Output filename (single videos only; the extension is added for you). |
+| `-v, --version` | Show the version and exit. |
+| `-h, --help` | Show help and exit. |
+
+### Good to know
+
+- Files are saved in the current directory, named after the video title. Persian
+  titles work; characters that filesystems reject are removed.
+- If a file with the same name already exists, a short hash is prefixed to the
+  new one instead of overwriting it.
+- Supported links: `aparat.com/v/<id>` and `aparat.com/playlist/<id>`.
 
 ## Contributing
 
-Any contributions are welcome here! To learn how you can contribute, please check the [contributing doc](https://github.com/CodeWithEmad/apyrat/blob/master/CONTRIBUTING.md).
+Bug reports and pull requests are welcome. See [CONTRIBUTING.md](https://github.com/CodeWithEmad/apyrat/blob/master/CONTRIBUTING.md)
+for the dev setup (`make install`, `make test`) and the release process.
 
 ## License
 
-This work is licensed under the terms of the [MIT](https://github.com/CodeWithEmad/apyrat/blob/master/LICENSE).
+[MIT](https://github.com/CodeWithEmad/apyrat/blob/master/LICENSE)

@@ -7,16 +7,14 @@ on:
     branches: [master]
 
 jobs:
-  test-p38-onward:
-    runs-on: ubuntu-24.04 # 26.04 has no py3.8/3.9 builds
+  test:
+    runs-on: ubuntu-24.04
     # 3.15 is still a prerelease: report, but don't block merges
     continue-on-error: ${{ matrix.python-version == '3.15' }}
     strategy:
       fail-fast: false
       matrix:
         python-version:
-          - 3.8
-          - 3.9
           - "3.10"
           - 3.11
           - 3.12
