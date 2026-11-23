@@ -8,11 +8,11 @@
 
 [![PyPI](https://img.shields.io/pypi/v/apyrat?logo=pypi&logoColor=white)](https://pypi.org/project/apyrat/)
 [![Python](https://img.shields.io/pypi/pyversions/apyrat?logo=python&logoColor=white)](https://pypi.org/project/apyrat/)
-[![Tests](https://img.shields.io/github/actions/workflow/status/CodeWithEmad/apyrat/test.yml?branch=master&label=tests)](https://github.com/CodeWithEmad/apyrat/actions/workflows/test.yml)
+[![Tests](https://img.shields.io/github/actions/workflow/status/CodeWithEmad/apyrat/test.yml?branch=main&label=tests)](https://github.com/CodeWithEmad/apyrat/actions/workflows/test.yml)
 [![Downloads](https://static.pepy.tech/badge/apyrat)](https://pepy.tech/projects/apyrat)
-[![License](https://img.shields.io/github/license/CodeWithEmad/apyrat)](https://github.com/CodeWithEmad/apyrat/blob/master/LICENSE)
+[![License](https://img.shields.io/github/license/CodeWithEmad/apyrat)](https://github.com/CodeWithEmad/apyrat/blob/main/LICENSE)
 
-![Monthly downloads](https://raw.githubusercontent.com/CodeWithEmad/apyrat/master/.pypi_chart/badge.svg)
+![Monthly downloads](https://raw.githubusercontent.com/CodeWithEmad/apyrat/main/.pypi_chart/badge.svg)
 
 </div>
 
@@ -64,9 +64,9 @@ apyrat -y https://www.aparat.com/playlist/448747
 
 ## Contributing
 
-Bug reports and pull requests are welcome. See [CONTRIBUTING.md](https://github.com/CodeWithEmad/apyrat/blob/master/CONTRIBUTING.md)
+Bug reports and pull requests are welcome. See [CONTRIBUTING.md](https://github.com/CodeWithEmad/apyrat/blob/main/CONTRIBUTING.md)
 for the dev setup (`make install`, `make test`) and the release process.
 
 ## License
 
-[MIT](https://github.com/CodeWithEmad/apyrat/blob/master/LICENSE)
+[MIT](https://github.com/CodeWithEmad/apyrat/blob/main/LICENSE)
