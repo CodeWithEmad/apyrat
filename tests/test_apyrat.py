@@ -58,3 +58,13 @@ def test_download_when_file_exists(mock_get, mock_isfile):
         if os.path.exists(output_file):
             os.remove(output_file)
     mock_isfile.assert_called_once()
+
+
+def test_sanitize_filename_persian_is_truncated_by_bytes():
+    name = Downloader._sanitize_filename("درک مفاهیم/شبکه؟ " * 40)
+    assert "/" not in name and "؟" in name
+    assert len(name.encode()) <= 200
+
+
+def test_sanitize_filename_empty_fallback():
+    assert Downloader._sanitize_filename("...//") == "video"

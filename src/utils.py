@@ -1,21 +1,3 @@
-"""Initialization script."""
-
-import io
-import os
-from typing import Dict
-
-CURRENT_DIRECTORY = os.path.abspath(os.path.dirname(__file__))
-
-
-def get_about_information() -> Dict[str, str]:
-    about_information: Dict[str, str] = {}
-    with io.open(
-        os.path.join(CURRENT_DIRECTORY, "__about__.py"), "rt", encoding="utf-8"
-    ) as file:
-        exec(file.read(), about_information)  # pylint: disable=exec-used
-    return about_information
-
-
 def check_domain_validity(domain: str) -> bool:
     if domain.startswith("https://"):
         domain = domain[8:]

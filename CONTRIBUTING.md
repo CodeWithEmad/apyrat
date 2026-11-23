@@ -61,7 +61,7 @@ Run checks:
 ```bash
 # Format and lint
 make format
-make lint
+make test-lint
 
 # Run tests
 make test

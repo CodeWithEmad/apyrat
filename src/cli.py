@@ -1,17 +1,17 @@
 """Console script for apyrat."""
 
+from importlib.metadata import version
+
 import click
 
 from src.apyrat import Downloader, URLType, VideoQuality
-from src.utils import get_about_information
 
 
 def display_version(ctx, param, value):
     if not value or ctx.resilient_parsing:
         return
     else:
-        ABOUT = get_about_information()
-        click.echo(ABOUT["__version__"])
+        click.echo(version("apyrat"))
         ctx.exit()
 
 

@@ -1,7 +1,7 @@
 import hashlib
 import os
 import tempfile
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from concurrent.futures import ThreadPoolExecutor
 from enum import Enum
 from urllib.parse import urlparse
 
@@ -61,7 +61,6 @@ class Downloader:
             return [self._get_single_video_qualities(self.video_uid)]
         elif self.url_type == URLType.PLAYLIST:
             click.echo("Loading playlist videos")
-            all_videos = []
             playlist_data = requests.get(
                 f"{API_BASE_URL}/video/playlist/one/playlist_id/{self.playlist_id}",  # noqa
                 headers=prepare_headers(),
@@ -73,19 +72,15 @@ class Downloader:
             ]
 
             with ThreadPoolExecutor(max_workers=10) as executor:
-                futures = [
-                    executor.submit(
-                        self._get_single_video_qualities,
-                        video["attributes"]["uid"],
-                        self.playlist_id,
+                # map() keeps playlist order, as_completed() would not
+                return list(
+                    executor.map(
+                        lambda v: self._get_single_video_qualities(
+                            v["attributes"]["uid"], self.playlist_id
+                        ),
+                        video_urls,
                     )
-                    for video in video_urls
-                ]
-
-            for future in as_completed(futures):
-                all_videos.append(future.result())
-
-            return all_videos
+                )
 
     def _get_single_video_qualities(self, video_uid, playlist_id=None):
         query = f"?playlist={playlist_id}&pr=1&mf=1" if playlist_id else ""
@@ -143,22 +138,23 @@ class Downloader:
             self._download_video(video)
 
     @staticmethod
-    def _sanitize_filename(name: str) -> str:
-        # Remove characters that are invalid on common filesystems
-        invalid = r'<>:"/\|?*'
-        for char in invalid:
-            name = name.replace(char, "")
-        # Strip trailing dots/spaces and limit length to be safe
+    def _sanitize_filename(name: str, max_bytes: int = 200) -> str:
+        """Make a video title safe to use as a filename.
+
+        Drops reserved/control characters and truncates by UTF-8 *bytes*:
+        filesystems cap names at 255 bytes and Persian letters take 2 each.
+        """
+        name = "".join(c for c in name if c not in '<>:"/\\|?*' and c >= " ")
         name = name.strip().strip(".")
-        if len(name) > 200:
-            name = name[:200]
+        name = name.encode("utf-8")[:max_bytes].decode("utf-8", "ignore").strip()
         return name or "video"
 
     def _download_video(self, video):
         url = video.get("url")
         title = video.get("title")
         click.echo(f"{title}\n{url}")
-        file_name = self._sanitize_filename(self.file_name or video.get("title"))
+        # a user-supplied name may include a directory; a title must not
+        file_name = self.file_name or self._sanitize_filename(title)
         file_format = self._get_file_format(url)
         output_file = f"{file_name}.{file_format}" if file_format else file_name
         # Check if file already exists
@@ -171,7 +167,7 @@ class Downloader:
         # Download to a safe temporary file first, then rename. This avoids
         # issues with filesystems/locales that choke on long Unicode paths
         # (e.g. Persian filenames) when opening the final file directly.
-        fd, tmp_file = tempfile.mkstemp(dir=".")
+        fd, tmp_file = tempfile.mkstemp(dir=os.path.dirname(output_file) or ".")
         os.close(fd)
         try:
             with requests.get(url, headers=prepare_headers(), stream=True) as r:
