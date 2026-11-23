@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="assets/logo.png" alt="Apyrat" width="240">
+
 # Apyrat
 
 **Download [Aparat](https://www.aparat.com) videos and playlists from your terminal.**
